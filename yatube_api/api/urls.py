@@ -1,5 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView, TokenVerifyView)
 
 from .views import PostViewSet, GroupViewSet, CommentViewSet, FollowViewSet
 
@@ -13,5 +15,7 @@ router.register('follow', FollowViewSet,
 
 urlpatterns = [
     path('v1/', include(router.urls)),
-    path('vi/jwt/', include('api.jwt', namespace='api')),
+    path('v1/jwt/create/', TokenObtainPairView.as_view()),
+    path('v1/jwt/refresh/', TokenRefreshView.as_view()),
+    path('v1/jwt/verify/', TokenVerifyView.as_view()),
 ]
