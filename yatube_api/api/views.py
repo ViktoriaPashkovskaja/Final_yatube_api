@@ -6,7 +6,7 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 )
 
-from posts.models import Post, Group, Follow  # noqa
+from posts.models import Post, Group, Comment, Follow  # noqa
 from .permissions import IsAuthorOrReadOnlyPermission
 from .serializers import (
     PostSerializer,
@@ -46,7 +46,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         post = get_object_or_404(Post, pk=self.kwargs.get("post_id"))
