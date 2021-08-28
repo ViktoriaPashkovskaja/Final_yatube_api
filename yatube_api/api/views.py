@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, filters
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
@@ -27,16 +26,6 @@ class PostViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    def perform_update(self, serializer):
-        if serializer.instance.author != self.request.user:
-            raise PermissionDenied('Нет прав на изменение!')
-        super(PostViewSet, self).perform_update(serializer)
-
-    def perform_destroy(self, instance):
-        if instance.author != self.request.user:
-            raise PermissionDenied('Нет прав на удаление!')
-        super(PostViewSet, self).perform_destroy(instance)
-
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
@@ -46,7 +35,10 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [
+        IsAuthenticatedOrReadOnly,
+        IsAuthorOrReadOnlyPermission,
+    ]
 
     def get_queryset(self):
         post = get_object_or_404(Post, pk=self.kwargs.get("post_id"))
@@ -56,19 +48,8 @@ class CommentViewSet(viewsets.ModelViewSet):
         post = get_object_or_404(Post, pk=self.kwargs.get("post_id"))
         serializer.save(author=self.request.user, post_id=post.id)
 
-    def perform_update(self, serializer):
-        if serializer.instance.author != self.request.user:
-            raise PermissionDenied('Нет прав на изменение!')
-        super(CommentViewSet, self).perform_update(serializer)
-
-    def perform_destroy(self, instance):
-        if instance.author != self.request.user:
-            raise PermissionDenied('Нет прав на удаление!')
-        super(CommentViewSet, self).perform_destroy(instance)
-
 
 class FollowViewSet(viewsets.ModelViewSet):
-    queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
