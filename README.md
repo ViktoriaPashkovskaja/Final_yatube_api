@@ -15,7 +15,7 @@
 Установка
 Клонируем репозиторий на локальную машину:
 
-$ git clone https://github.com/netshy/api_final_yatube.git
+$ git clone https://github.com/ViktoriaPashkovskaja/api_final_yatube.git
 
 Создаем виртуальное окружение:
 
@@ -34,15 +34,12 @@ $ python manage.py makemigrations и $ python manage.py migrate
 $ python manage.py runserver
 
 
-##Примеры запросов к API
+Примеры запросов к API
 
-###Пример запроса
-
-```
+Пример запроса
 http://127.0.0.1:8000/api/v1/posts/
-```
-###Пример ответа
-```
+
+Пример ответа
 [
     {
         "id": 1,
@@ -53,18 +50,14 @@ http://127.0.0.1:8000/api/v1/posts/
         "group": 2
     }
 ]
-```
-###Пример запроса
 
-```
+Пример запроса
 http://127.0.0.1:8000/api/v1/follow/
-```
-###Пример ответа
-```
+
+Пример ответа
 [
     {
         "user": "Matvey",
         "following": "Sergey"
     }
 ]
-```
